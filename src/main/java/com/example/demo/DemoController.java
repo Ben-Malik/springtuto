@@ -1,18 +1,31 @@
 package com.example.demo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+@RestController
 public class DemoController {
 
     @Autowired
     private CustomerRepository customerRepository;
 
-    public String addCustomer(@RequestParam String firstName, @RequestParam String lastName) {
+    @PostMapping("/add")
+    public String addCustomer(@RequestParam String first, @RequestParam String last) {
         Customer customer = new Customer();
-        customer.setFirstName(firstName);
-        customer.setLastName(lastName);
+        customer.setFirstName(first);
+        customer.setLastName(last);
         customerRepository.save(customer);
+
         return "Added new Customer to repo!";
+    }
+
+    @GetMapping("/list")
+    public Iterable<Customer> getCustomers() {
+        return customerRepository.findAll();
+    }
+
+    @GetMapping("/find/{id}")
+    public Customer findCustomerById(@PathVariable Integer id) {
+        return customerRepository.findCustomerById(id);
     }
 }
